@@ -1,0 +1,7 @@
+{
+  "python.defaultInterpreterPath": "d:/result analyser/.venv/Scripts/python.exe",
+  "code-runner.executorMap": {
+    "python": "& \"d:/result analyser/.venv/Scripts/python.exe\" -u"
+  },
+  "code-runner.runInTerminal": true
+}

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoPulse | Carbon Footprint Tracker</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <!-- External CSS stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- External JS script (defer to ensure DOM is ready) -->
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body>
+
+    <header role="banner">
+        <div class="logo-container">
+            <div class="logo-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C22,3 19.39,4.41 17,8M6,18C6.39,17 6.87,15.82 7.46,14.61C7.72,14.07 8,13.5 8.35,13C8.61,12.6 8.89,12.21 9.17,11.83C8.42,12.39 7.7,13.06 7.07,13.82C6.07,15 5.25,16.42 4.67,18L6,18Z"/>
+                </svg>
+            </div>
+            <span class="logo-text">EcoPulse</span>
+        </div>
+        <span class="header-tagline">Track. Reduce. Breathe.</span>
+    </header>
+
+    <main id="main-content" role="main">
+        <section class="hero-section" aria-labelledby="hero-title">
+            <h1 id="hero-title" class="hero-title">Take Control of Your <span>Carbon Footprint</span></h1>
+            <p class="hero-subtitle">Calculate your ecological footprint, get personalized insights, and adopt simple daily practices that restore balance to our planet.</p>
+        </section>
+
+        <div class="dashboard-grid">
+            
+            <!-- LEFT PANEL: The Calculator Form -->
+            <section class="glass-card" aria-labelledby="calc-title">
+                <h2 id="calc-title" class="sr-only">Carbon Calculator Form</h2>
+                <form id="footprintForm" method="POST" action="/" aria-label="Carbon Footprint Inputs">
+                    
+                    <!-- Transport Section -->
+                    <fieldset class="form-fieldset">
+                        <legend class="form-section-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                            1. Transport & Mobility
+                        </legend>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="car_type">Primary Vehicle Type</label>
+                                <select id="car_type" name="car_type" aria-required="true">
+                                    <option value="petrol_car">Petrol Car</option>
+                                    <option value="diesel_car">Diesel Car</option>
+                                    <option value="hybrid_car">Hybrid Car</option>
+                                    <option value="electric_car">Electric Car</option>
+                                    <option value="motorbike">Motorcycle</option>
+                                    <option value="none">No Private Car / None</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="car_dist">Car Distance Covered per Year</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="car_dist" name="car_dist" min="0" value="8000" aria-required="true">
+                                    <span class="input-suffix" aria-hidden="true">km/yr</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="public_bus">Bus Commute Distance per Year</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="public_bus" name="public_bus" min="0" value="1200" aria-required="true">
+                                    <span class="input-suffix" aria-hidden="true">km/yr</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="public_train">Train / Rail Distance per Year</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="public_train" name="public_train" min="0" value="2000" aria-required="true">
+                                    <span class="input-suffix" aria-hidden="true">km/yr</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Air Travel -->
+                    <fieldset class="form-fieldset">
+                        <legend class="form-section-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                            2. Air Travel (Flights per Year)
+                        </legend>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="flights_short">Short Haul flights (under 3 hrs)</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="flights_short" name="flights_short" min="0" value="2" aria-required="true">
+                                    <span class="input-suffix" aria-hidden="true">flights/yr</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="flights_long">Long Haul flights (over 3 hrs)</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="flights_long" name="flights_long" min="0" value="2" aria-required="true">
+                                    <span class="input-suffix" aria-hidden="true">flights/yr</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Home Energy -->
+                    <fieldset class="form-fieldset">
+                        <legend class="form-section-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                            </svg>
+                            3. Home Energy Consumption
+                        </legend>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="electricity">Monthly Electricity Usage</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="electricity" name="electricity" min="0" value="250" aria-required="true">
+                                    <span class="input-suffix" aria-hidden="true">kWh/mo</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="gas">Monthly Gas Usage</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="gas" name="gas" min="0" value="150" aria-required="true">
+                                    <span class="input-suffix" aria-hidden="true">kWh/mo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Diet & Lifestyle -->
+                    <fieldset class="form-fieldset">
+                        <legend class="form-section-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            4. Diet & Waste Habits
+                        </legend>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="diet_type">Your Diet Type</label>
+                                <select id="diet_type" name="diet_type" aria-required="true">
+                                    <option value="heavy_meat">Meat Intensive (daily red meat)</option>
+                                    <option value="medium_meat" selected>Average Meat/Dairy</option>
+                                    <option value="low_meat">Low Meat/Flexitarian</option>
+                                    <option value="pescatarian">Pescatarian</option>
+                                    <option value="vegetarian">Vegetarian</option>
+                                    <option value="vegan">Vegan</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="recycling">Recycling Habit</label>
+                                <select id="recycling" name="recycling" aria-required="true">
+                                    <option value="no_recycling">None (All to garbage)</option>
+                                    <option value="partial_recycling" selected>Partial Recycling</option>
+                                    <option value="full_recycling">Full recycling / Zero waste effort</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <button type="submit" class="btn" aria-label="Calculate annual carbon footprint">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                        Calculate Footprint
+                    </button>
+                </form>
+            </section>
+
+            <!-- RIGHT PANEL: Live Dashboard Results -->
+            <section class="glass-card" style="display: flex; flex-direction: column;" aria-labelledby="results-title">
+                <h2 id="results-title" class="sr-only">EcoPulse Emissions Dashboard</h2>
+                
+                <div class="results-header">
+                    <p>Estimated Carbon Footprint</p>
+                    <div class="number-badge pulse" id="userFootprintVal" aria-live="polite" aria-atomic="true">
+                        <span id="co2Num">--</span> 
+                        <span class="unit">tonnes CO2e/yr</span>
+                    </div>
+                </div>
+
+                <div class="stats-summary">
+                    <div class="stat-item" aria-live="polite">
+                        <div class="label">vs Global Average</div>
+                        <div class="value" id="globalCompareVal">--</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="label">Recommended Limit</div>
+                        <div class="value green">2.0 tonnes</div>
+                    </div>
+                </div>
+
+                <!-- Chart.js Breakdown -->
+                <div class="chart-container" role="img" aria-label="Doughnut chart depicting carbon footprint breakdown by category">
+                    <canvas id="footprintChart"></canvas>
+                </div>
+
+                <!-- Comparisons -->
+                <div class="comparison-bars" aria-label="Emissions Comparison Charts">
+                    <div class="bar-group">
+                        <div class="bar-label">
+                            <span>Your Footprint</span>
+                            <span id="userText" aria-live="polite">-- tonnes</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill user" id="userBar" style="width: 0%" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bar-group">
+                        <div class="bar-label">
+                            <span>Target Limit (under 1.5C warming)</span>
+                            <span>2.0 tonnes</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill target" style="width: 15%" aria-hidden="true"></div>
+                        </div>
+                    </div>
+
+                    <div class="bar-group">
+                        <div class="bar-label">
+                            <span>Global Average</span>
+                            <span>4.5 tonnes</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill global" style="width: 32%" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personalized Recommendation Box -->
+                <div class="recommendation-box" id="recBox" role="region" aria-live="polite">
+                    <div class="rec-icon">
+                        <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="rec-text">
+                        <h3 id="recTitle" class="rec-title-style">Calculating...</h3>
+                        <p id="recDesc">Fill out the calculator on the left to see your personalized recommendations.</p>
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- ACTIONS PANEL: Actions checklist -->
+        <section class="glass-card actions-card" aria-labelledby="actions-title">
+            <div class="actions-header">
+                <div>
+                    <h2 id="actions-title" class="actions-header-title">Eco-Action Planner</h2>
+                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem;">Adopt daily actions to offset and reduce your footprint. Check items to see simulated savings.</p>
+                </div>
+                <div class="savings-tracker" aria-live="polite" aria-atomic="true">
+                    <span>CO2 Saved:</span>
+                    <span id="savedVal">0 kg / year</span>
+                </div>
+            </div>
+
+            <div class="actions-list" role="group" aria-label="Sustainable action options">
+                
+                <!-- Action 1 -->
+                <button type="button" class="action-item" role="checkbox" aria-checked="false" id="action-carpool"
+                        data-savings="650" data-category="transport">
+                    <span class="action-checkbox" aria-hidden="true">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </span>
+                    <span class="action-content">
+                        <span class="action-title">Carpool or Bike to Work</span>
+                        <span class="action-desc">Replace 2-3 single-occupancy car commutes per week with bike riding, walking, or carpooling.</span>
+                    </span>
+                    <span class="action-saving">-650 kg CO2e</span>
+                </button>
+
+                <!-- Action 2 -->
+                <button type="button" class="action-item" role="checkbox" aria-checked="false" id="action-renewables"
+                        data-savings="1000" data-category="energy">
+                    <span class="action-checkbox" aria-hidden="true">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </span>
+                    <span class="action-content">
+                        <span class="action-title">Switch to Renewable Energy Provider</span>
+                        <span class="action-desc">Enroll in a 100% green energy plan with your local electric utility.</span>
+                    </span>
+                    <span class="action-saving">-1,000 kg CO2e</span>
+                </button>
+
+                <!-- Action 3 -->
+                <button type="button" class="action-item" role="checkbox" aria-checked="false" id="action-diet"
+                        data-savings="500" data-category="diet">
+                    <span class="action-checkbox" aria-hidden="true">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </span>
+                    <span class="action-content">
+                        <span class="action-title">Meat-Free Mondays</span>
+                        <span class="action-desc">Replace meat meals with plant-based options at least once or twice per week.</span>
+                    </span>
+                    <span class="action-saving">-500 kg CO2e</span>
+                </button>
+
+                <!-- Action 4 -->
+                <button type="button" class="action-item" role="checkbox" aria-checked="false" id="action-thermostat"
+                        data-savings="300" data-category="energy">
+                    <span class="action-checkbox" aria-hidden="true">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </span>
+                    <span class="action-content">
+                        <span class="action-title">Eco-Smart Thermostat & LEDs</span>
+                        <span class="action-desc">Turn heating down by 2°C, and swap traditional incandescent bulbs for energy-efficient LEDs.</span>
+                    </span>
+                    <span class="action-saving">-300 kg CO2e</span>
+                </button>
+
+                <!-- Action 5 -->
+                <button type="button" class="action-item" role="checkbox" aria-checked="false" id="action-compost"
+                        data-savings="200" data-category="waste">
+                    <span class="action-checkbox" aria-hidden="true">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </span>
+                    <span class="action-content">
+                        <span class="action-title">Composting and Active Recycling</span>
+                        <span class="action-desc">Compost organic kitchen waste and meticulously recycle cardboards, plastics, and glass.</span>
+                    </span>
+                    <span class="action-saving">-200 kg CO2e</span>
+                </button>
+
+            </div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <p>&copy; 2026 EcoPulse Carbon Dashboard. Let's make small changes for a big future.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+import sys
+import os
+
+if __name__ == '__main__':
+    print("Starting EcoPulse Carbon Footprint Tracker...")
+    print("Launching Flask server on http://127.0.0.1:5000")
+    # Launch app.py in the current directory
+    os.system(f"{sys.executable} app.py")
